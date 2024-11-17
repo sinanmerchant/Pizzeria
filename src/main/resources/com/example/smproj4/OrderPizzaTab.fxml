@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.example.smproj4.OrderPizzaTabController" spacing="10" alignment="CENTER">
+    <Label fx:id="pizzaStyleLabel" text="Pizza Style" style="-fx-font-size: 20px;"/>
+    <!--
+    <ImageView fx:id="pizzaImage" fitWidth="200" fitHeight="150"/>
+    -->
+
+    <HBox spacing="10">
+        <ComboBox fx:id="pizzaTypeComboBox"/>
+        <HBox spacing="10">
+            <RadioButton text="Small" fx:id="smallSizeButton"/>
+            <RadioButton text="Medium" fx:id="mediumSizeButton"/>
+            <RadioButton text="Large" fx:id="largeSizeButton"/>
+        </HBox>
+    </HBox>
+
+    <HBox spacing="10">
+        <VBox>
+            <Label text="Available Toppings"/>
+            <ListView fx:id="availableToppingsList"/>
+        </VBox>
+        <VBox spacing="10" alignment="CENTER">
+            <Button text="Add" onAction="#handleAddTopping"/>
+            <Button text="Remove" onAction="#handleRemoveTopping"/>
+        </VBox>
+        <VBox>
+            <Label text="Selected Toppings"/>
+            <ListView fx:id="selectedToppingsList"/>
+        </VBox>
+    </HBox>
+
+    <HBox spacing="10">
+        <Label text="Pizza Price: $" />
+        <TextField fx:id="pizzaPriceField" editable="false"/>
+    </HBox>
+
+    <Button text="Add to Order" onAction="#handleAddToOrder"/>
+</VBox>

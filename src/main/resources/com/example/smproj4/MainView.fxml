@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.example.smproj4.MainViewController" spacing="20" alignment="CENTER">
+    <Label text="RU Pizza Main Menu" style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
+
+    <TabPane fx:id="tabPane" prefWidth="800" prefHeight="600"/>
+
+    <HBox spacing="40" alignment="CENTER">
+        <Button fx:id="chicagoButton" onAction="#handleChicagoStyle">
+            <VBox alignment="CENTER" spacing="10">
+                <ImageView fx:id="chicagoImageView" fitWidth="120" fitHeight="120"/>
+                <Label text="Chicago Style" style="-fx-font-size: 14px;"/>
+            </VBox>
+        </Button>
+        <Button fx:id="nyButton" onAction="#handleNYStyle">
+            <VBox alignment="CENTER" spacing="10">
+                <ImageView fx:id="nyImageView" fitWidth="120" fitHeight="120"/>
+                <Label text="NY Style" style="-fx-font-size: 14px;"/>
+            </VBox>
+        </Button>
+        <Button fx:id="ordersButton" onAction="#handleOrdersPlaced">
+            <VBox alignment="CENTER" spacing="10">
+                <ImageView fx:id="ordersImageView" fitWidth="120" fitHeight="120"/>
+                <Label text="Orders Placed" style="-fx-font-size: 14px;"/>
+            </VBox>
+        </Button>
+        <Button fx:id="cartButton" onAction="#handleCurrentOrder">
+            <VBox alignment="CENTER" spacing="10">
+                <ImageView fx:id="cartImageView" fitWidth="120" fitHeight="120"/>
+                <Label text="Current Order" style="-fx-font-size: 14px;"/>
+            </VBox>
+        </Button>
+    </HBox>
+</VBox>

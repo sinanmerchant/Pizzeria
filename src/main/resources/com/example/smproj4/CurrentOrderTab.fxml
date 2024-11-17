@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.example.smproj4.CurrentOrderTabController" spacing="10" alignment="CENTER">
+    <Label text="Current Order" style="-fx-font-size: 20px;"/>
+
+    <ListView fx:id="currentOrderList" prefHeight="300"/>
+
+    <HBox spacing="10" alignment="CENTER">
+        <Label text="Subtotal $:"/>
+        <TextField fx:id="subtotalField" editable="false"/>
+        <Label text="Sales Tax $:"/>
+        <TextField fx:id="taxField" editable="false"/>
+        <Label text="Order Total $:"/>
+        <TextField fx:id="totalField" editable="false"/>
+    </HBox>
+
+    <HBox spacing="10" alignment="CENTER">
+        <Button text="Remove Pizza" onAction="#handleRemovePizza"/>
+        <Button text="Clear Order" onAction="#handleClearOrder"/>
+        <Button text="Place Order" onAction="#handlePlaceOrder"/>
+    </HBox>
+</VBox>
