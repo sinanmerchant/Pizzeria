@@ -3,21 +3,27 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
-      fx:controller="com.example.smproj4.StoreOrdersTabController" spacing="10" alignment="CENTER">
-    <Label text="Store Orders" style="-fx-font-size: 20px;"/>
-
-    <HBox spacing="10" alignment="CENTER">
-        <Label text="Order Number:"/>
-        <ComboBox fx:id="orderNumberComboBox"/>
-        <Label text="Order Total:"/>
-        <TextField fx:id="orderTotalField" editable="false"/>
-    </HBox>
-
-    <ListView fx:id="orderDetailsList" prefHeight="300"/>
-
-    <HBox spacing="10" alignment="CENTER">
-        <Button text="Cancel Order" onAction="#handleCancelOrder"/>
-        <Button text="Export Orders" onAction="#handleExportOrders"/>
-    </HBox>
-</VBox>
+<AnchorPane xmlns:fx="http://javafx.com/fxml" fx:controller="com.example.smproj4.StoreOrdersTabController">
+    <children>
+        <VBox spacing="10.0" alignment="TOP_CENTER" AnchorPane.topAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0">
+            <!-- Order Number Selection -->
+            <HBox spacing="10.0" alignment="CENTER_LEFT">
+                <Label text="Select Order Number:" />
+                <ComboBox fx:id="orderNumberComboBox" prefWidth="150.0" />
+            </HBox>
+            <!-- Order Total -->
+            <HBox spacing="10.0" alignment="CENTER_LEFT">
+                <Label text="Order Total (with tax):" />
+                <TextField fx:id="orderTotalField" editable="false" prefWidth="150.0" />
+            </HBox>
+            <!-- List of Pizzas -->
+            <Label text="Pizzas in Order:" />
+            <ListView fx:id="pizzasListView" prefHeight="200.0" />
+            <!-- Buttons -->
+            <HBox spacing="20.0" alignment="CENTER">
+                <Button text="Cancel Order" onAction="#handleCancelOrder" />
+                <Button text="Export Orders" onAction="#handleExportOrders" />
+            </HBox>
+        </VBox>
+    </children>
+</AnchorPane>

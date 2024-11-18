@@ -10,4 +10,14 @@ public class BBQChicken extends Pizza {
             default: return 0;
         }
     }
+
+    @Override
+    public String toString() {
+        return String.format(
+                "BBQ Chicken (%s), %s, %.2f",
+                getCrust(),
+                String.join(", ", getToppings().toString()),
+                price()
+        );
+    }
 }

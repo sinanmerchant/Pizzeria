@@ -10,6 +10,10 @@
     <!--
     <ImageView fx:id="pizzaImage" fitWidth="200" fitHeight="150"/>
     -->
+    <HBox spacing="10">
+        <Label text="Crust:"/>
+        <TextField fx:id="crustField" editable="false"/>
+    </HBox>
 
     <HBox spacing="10">
         <ComboBox fx:id="pizzaTypeComboBox"/>

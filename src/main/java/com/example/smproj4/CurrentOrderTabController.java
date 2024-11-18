@@ -6,46 +6,99 @@ import javafx.scene.control.*;
 public class CurrentOrderTabController {
 
     @FXML
-    private ListView<String> currentOrderList;
+    private TextField orderNumberField;
+
+    @FXML
+    private ListView<String> orderDetailsList;
 
     @FXML
     private TextField subtotalField, taxField, totalField;
 
+    private Order currentOrder;
+
+    private static final double TAX_RATE = 0.06625;
+
+    private MainViewController mainController;
+
     @FXML
-    public void initialize() {
-        // Initialize fields with default values
-        subtotalField.setText("0.00");
-        taxField.setText("0.00");
-        totalField.setText("0.00");
+    private void initialize() {
+        clearOrderDetails();
+    }
+
+    public void setMainController(MainViewController controller) {
+        this.mainController = controller;
+    }
+
+    public void updateOrderDetails() {
+        if (currentOrder == null) return;
+
+        // Update order number
+        orderNumberField.setText(String.valueOf(currentOrder.getNumber()));
+
+        // Update order details
+        orderDetailsList.getItems().clear();
+        for (Pizza pizza : currentOrder.getPizzas()) {
+            orderDetailsList.getItems().add(pizza.toString());
+        }
+
+        // Update totals
+        updateTotals();
+    }
+
+    public void setOrder(Order order) {
+        this.currentOrder = order;
+        updateOrderDetails();
     }
 
     @FXML
-    public void handleRemovePizza() {
-        String selectedPizza = currentOrderList.getSelectionModel().getSelectedItem();
-        if (selectedPizza != null) {
-            currentOrderList.getItems().remove(selectedPizza);
-            updateTotals();
+    private void handleRemovePizza() {
+        int selectedIndex = orderDetailsList.getSelectionModel().getSelectedIndex();
+        if (selectedIndex >= 0) {
+            currentOrder.getPizzas().remove(selectedIndex);
+            updateOrderDetails();
+        } else {
+            showAlert("Error", "No Pizza Selected", "Please select a pizza to remove.", Alert.AlertType.ERROR);
         }
     }
 
     @FXML
-    public void handleClearOrder() {
-        currentOrderList.getItems().clear();
-        updateTotals();
+    private void handleClearOrder() {
+        currentOrder.getPizzas().clear();
+        updateOrderDetails();
     }
 
     @FXML
-    public void handlePlaceOrder() {
-        // Finalize the current order and clear the list
-        currentOrderList.getItems().clear();
-        updateTotals();
+    private void handlePlaceOrder() {
+        if (currentOrder.getPizzas().isEmpty()) {
+            showAlert("Error", "No Items in Order", "You cannot place an empty order.", Alert.AlertType.ERROR);
+            return;
+        }
+
+        // Add the current order to OrderHistory
+        mainController.getOrderHistory().addOrder(currentOrder);
+
+        showAlert("Success", "Order Placed", "Your order has been placed successfully.", Alert.AlertType.INFORMATION);
+
+        // Notify MainViewController to update the Store Orders Tab
+        mainController.updateStoreOrdersTab();
+
+        // Create a new order
+        mainController.createNewOrderAndUpdate();
+    }
+
+    private void clearOrderDetails() {
+        orderNumberField.clear();
+        orderDetailsList.getItems().clear();
+        subtotalField.clear();
+        taxField.clear();
+        totalField.clear();
     }
 
     private void updateTotals() {
-        double subtotal = currentOrderList.getItems().stream()
-                .mapToDouble(this::calculatePizzaPrice)
-                .sum();
-        double tax = subtotal * 0.06625;
+        if (currentOrder == null) return;
+
+        double subtotal = currentOrder.calculateTotal();
+        double tax = subtotal * TAX_RATE;
         double total = subtotal + tax;
 
         subtotalField.setText(String.format("%.2f", subtotal));
@@ -53,8 +106,11 @@ public class CurrentOrderTabController {
         totalField.setText(String.format("%.2f", total));
     }
 
-    private double calculatePizzaPrice(String pizzaDetails) {
-        // Extract price from pizza details (dummy implementation)
-        return Double.parseDouble(pizzaDetails.split(" - ")[1].replace("$", ""));
+    private void showAlert(String title, String header, String content, Alert.AlertType type) {
+        Alert alert = new Alert(type);
+        alert.setTitle(title);
+        alert.setHeaderText(header);
+        alert.setContentText(content);
+        alert.showAndWait();
     }
 }
