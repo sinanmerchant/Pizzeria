@@ -26,7 +26,6 @@ public class StoreOrdersTabController {
 
     @FXML
     private void initialize() {
-        // Set up the listener once
         orderNumberComboBox.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
             displayOrderDetails(newVal);
         });
@@ -43,9 +42,14 @@ public class StoreOrdersTabController {
                 .collect(java.util.stream.Collectors.toList());
         orderNumberComboBox.setItems(FXCollections.observableArrayList(orderNumbers));
 
-        // Optionally select the first order if available
         if (!orderNumbers.isEmpty()) {
+            // Clear selection to ensure listener is triggered
+            orderNumberComboBox.getSelectionModel().clearSelection();
             orderNumberComboBox.getSelectionModel().selectFirst();
+
+            // Explicitly display order details for the new selection
+            Integer selectedOrderNumber = orderNumberComboBox.getSelectionModel().getSelectedItem();
+            displayOrderDetails(selectedOrderNumber);
         } else {
             clearOrderDetails();
         }
@@ -93,9 +97,7 @@ public class StoreOrdersTabController {
             orderHistory.cancelOrder(selectedOrder);
             showAlert("Success", "Order Cancelled", "Order #" + selectedOrderNumber + " has been cancelled.", Alert.AlertType.INFORMATION);
             updateOrderNumbers();
-            clearOrderDetails();
-
-            // Also notify the MainViewController to update the current order if needed
+            // No need to call displayOrderDetails here as it's handled in updateOrderNumbers()
         } else {
             showAlert("Error", "Order Not Found", "The selected order could not be found.", Alert.AlertType.ERROR);
         }

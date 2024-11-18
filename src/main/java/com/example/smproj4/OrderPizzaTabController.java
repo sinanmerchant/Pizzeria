@@ -2,13 +2,11 @@ package com.example.smproj4;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class OrderPizzaTabController {
 
@@ -78,7 +76,7 @@ public class OrderPizzaTabController {
 
         availableToppingsList.getItems().addAll(EnumSet.allOf(Topping.class));
         pizzaPriceField.setText("0.00");
-        crustField.setText(""); // Initially clear the crust field
+        crustField.setText("");
     }
 
     private void handlePizzaTypeChange(String pizzaType) {

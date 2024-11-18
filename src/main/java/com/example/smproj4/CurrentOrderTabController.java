@@ -79,8 +79,8 @@ public class CurrentOrderTabController {
 
         showAlert("Success", "Order Placed", "Your order has been placed successfully.", Alert.AlertType.INFORMATION);
 
-        // Notify MainViewController to update the Store Orders Tab
-        mainController.updateStoreOrdersTab();
+        // Notify MainViewController to update the Store Orders Window
+        mainController.updateStoreOrdersWindow();
 
         // Create a new order
         mainController.createNewOrderAndUpdate();

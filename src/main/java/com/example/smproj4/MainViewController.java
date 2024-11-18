@@ -3,17 +3,16 @@ package com.example.smproj4;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
+import javafx.scene.Scene;
+import javafx.scene.image.Image;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class MainViewController {
-
-    @FXML
-    private TabPane tabPane;
 
     @FXML
     private ImageView chicagoImageView;
@@ -28,20 +27,27 @@ public class MainViewController {
     private ImageView cartImageView;
 
     private Order currentOrder;
-    private int orderCounter = 1;
-
-    private Tab currentOrderTab;
-    private CurrentOrderTabController currentOrderController;
+    private int orderCounter = 1;  // Order counter for generating new order numbers
 
     private OrderHistory orderHistory = new OrderHistory();
 
-    private Map<String, OrderPizzaTabController> pizzaControllers = new HashMap<>();
+    // Nested class to hold both the Stage and the Controller
+    private static class WindowInfo {
+        Stage stage;
+        Object controller;
 
-    private StoreOrdersTabController storeOrdersController; // Added reference
+        public WindowInfo(Stage stage, Object controller) {
+            this.stage = stage;
+            this.controller = controller;
+        }
+    }
+
+    // Map to keep track of open windows and their controllers
+    private Map<String, WindowInfo> openWindows = new HashMap<>();
 
     @FXML
     public void initialize() {
-        // Initialize images for the buttons
+        // Load images for the image views
         chicagoImageView.setImage(new Image(getClass().getResource("/images/chicago_pizza.jpg").toExternalForm()));
         nyImageView.setImage(new Image(getClass().getResource("/images/ny_pizza.jpg").toExternalForm()));
         ordersImageView.setImage(new Image(getClass().getResource("/images/orders_icon.jpg").toExternalForm()));
@@ -49,126 +55,132 @@ public class MainViewController {
 
         // Create a new order
         currentOrder = createNewOrder();
-        loadCurrentOrderTab();
     }
 
     private Order createNewOrder() {
+        // Create a new order with a unique order number
         return new Order(orderCounter++);
     }
 
     @FXML
     public void handleChicagoStyle() {
-        loadPizzaTab("Chicago Style", "/com/example/smproj4/OrderPizzaTab.fxml", "Chicago Style");
+        openPizzaWindow("Chicago Style", "/com/example/smproj4/OrderPizzaView.fxml", "Chicago Style");
     }
 
     @FXML
     public void handleNYStyle() {
-        loadPizzaTab("NY Style", "/com/example/smproj4/OrderPizzaTab.fxml", "NY Style");
+        openPizzaWindow("NY Style", "/com/example/smproj4/OrderPizzaView.fxml", "NY Style");
     }
 
     @FXML
     public void handleOrdersPlaced() {
-        loadTab("Store Orders", "/com/example/smproj4/StoreOrdersTab.fxml");
+        openWindow("Store Orders", "/com/example/smproj4/StoreOrdersView.fxml");
     }
 
     @FXML
     public void handleCurrentOrder() {
-        if (currentOrderTab != null) {
-            tabPane.getSelectionModel().select(currentOrderTab);
-        } else {
-            loadCurrentOrderTab();
-        }
+        openWindow("Current Order", "/com/example/smproj4/CurrentOrderView.fxml");
     }
 
-    private void loadPizzaTab(String title, String fxmlPath, String style) {
-        Tab existingTab = findTab(title);
-        if (existingTab != null) {
-            tabPane.getSelectionModel().select(existingTab);
+    private void openPizzaWindow(String windowKey, String fxmlPath, String style) {
+        if (openWindows.containsKey(windowKey)) {
+            openWindows.get(windowKey).stage.toFront();
             return;
         }
 
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
-            Pane content = loader.load();
+            VBox root = loader.load();
 
-            // Set pizza style and shared order
+            // Get the controller
             OrderPizzaTabController pizzaController = loader.getController();
             pizzaController.setPizzaStyle(style);
             pizzaController.setOrder(currentOrder);
             pizzaController.setUpdateCallback(() -> {
-                if (currentOrderController != null) {
-                    currentOrderController.updateOrderDetails();
+                // Update current order window if open
+                if (openWindows.containsKey("Current Order")) {
+                    WindowInfo windowInfo = openWindows.get("Current Order");
+                    if (windowInfo.controller instanceof CurrentOrderTabController) {
+                        CurrentOrderTabController currentOrderController = (CurrentOrderTabController) windowInfo.controller;
+                        currentOrderController.updateOrderDetails();
+                    }
                 }
             });
 
-            // Store the controller in the map
-            pizzaControllers.put(title, pizzaController);
+            Stage stage = new Stage();
+            stage.setTitle(style + " Pizza Order");
+            stage.setScene(new Scene(root));
+            stage.setOnCloseRequest(e -> openWindows.remove(windowKey));
+            stage.show();
 
-            Tab pizzaTab = new Tab(title, content);
-            tabPane.getTabs().add(pizzaTab);
-            tabPane.getSelectionModel().select(pizzaTab);
+            // Store both the stage and the controller
+            openWindows.put(windowKey, new WindowInfo(stage, pizzaController));
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    private void loadCurrentOrderTab() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/smproj4/CurrentOrderTab.fxml"));
-            Pane content = loader.load();
-
-            currentOrderController = loader.getController();
-            currentOrderController.setOrder(currentOrder);
-            currentOrderController.setMainController(this);
-
-            currentOrderTab = new Tab("Current Order", content);
-            tabPane.getTabs().add(currentOrderTab);
-            tabPane.getSelectionModel().select(currentOrderTab);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void loadTab(String title, String fxmlPath) {
-        Tab existingTab = findTab(title);
-        if (existingTab != null) {
-            tabPane.getSelectionModel().select(existingTab);
+    private void openWindow(String windowKey, String fxmlPath) {
+        if (openWindows.containsKey(windowKey)) {
+            openWindows.get(windowKey).stage.toFront();
             return;
         }
 
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
-            Pane content = loader.load();
+            VBox root = loader.load();
 
-            if (title.equals("Store Orders")) {
-                storeOrdersController = loader.getController(); // Store the controller reference
+            // Get the controller
+            Object controller = loader.getController();
+
+            Stage stage = new Stage();
+            stage.setTitle(windowKey);
+            stage.setScene(new Scene(root));
+            stage.setOnCloseRequest(e -> openWindows.remove(windowKey));
+
+            if (controller instanceof CurrentOrderTabController) {
+                CurrentOrderTabController currentOrderController = (CurrentOrderTabController) controller;
+                currentOrderController.setOrder(currentOrder);
+                currentOrderController.setMainController(this);
+            } else if (controller instanceof StoreOrdersTabController) {
+                StoreOrdersTabController storeOrdersController = (StoreOrdersTabController) controller;
                 storeOrdersController.setOrderHistory(orderHistory);
             }
 
-            Tab newTab = new Tab(title, content);
-            tabPane.getTabs().add(newTab);
-            tabPane.getSelectionModel().select(newTab);
+            stage.show();
+
+            // Store both the stage and the controller
+            openWindows.put(windowKey, new WindowInfo(stage, controller));
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    private Tab findTab(String title) {
-        return tabPane.getTabs().stream()
-                .filter(tab -> tab.getText().equals(title))
-                .findFirst()
-                .orElse(null);
-    }
-
+    /**
+     * Creates a new order and updates the current order controller.
+     */
     public void createNewOrderAndUpdate() {
         currentOrder = createNewOrder();
-        if (currentOrderController != null) {
-            currentOrderController.setOrder(currentOrder);
-            currentOrderController.updateOrderDetails();
+
+        // Update Current Order window
+        if (openWindows.containsKey("Current Order")) {
+            WindowInfo windowInfo = openWindows.get("Current Order");
+            if (windowInfo.controller instanceof CurrentOrderTabController) {
+                CurrentOrderTabController currentOrderController = (CurrentOrderTabController) windowInfo.controller;
+                currentOrderController.setOrder(currentOrder);
+                currentOrderController.updateOrderDetails();
+            }
         }
+
         // Update all pizza controllers with the new currentOrder
-        for (OrderPizzaTabController pizzaController : pizzaControllers.values()) {
-            pizzaController.setOrder(currentOrder);
+        for (String key : openWindows.keySet()) {
+            if (key.equals("Chicago Style") || key.equals("NY Style")) {
+                WindowInfo windowInfo = openWindows.get(key);
+                if (windowInfo.controller instanceof OrderPizzaTabController) {
+                    OrderPizzaTabController pizzaController = (OrderPizzaTabController) windowInfo.controller;
+                    pizzaController.setOrder(currentOrder);
+                }
+            }
         }
     }
 
@@ -176,9 +188,13 @@ public class MainViewController {
         return orderHistory;
     }
 
-    public void updateStoreOrdersTab() {
-        if (storeOrdersController != null) {
-            storeOrdersController.updateOrderNumbers();
+    public void updateStoreOrdersWindow() {
+        if (openWindows.containsKey("Store Orders")) {
+            WindowInfo windowInfo = openWindows.get("Store Orders");
+            if (windowInfo.controller instanceof StoreOrdersTabController) {
+                StoreOrdersTabController storeOrdersController = (StoreOrdersTabController) windowInfo.controller;
+                storeOrdersController.updateOrderNumbers();
+            }
         }
     }
 }

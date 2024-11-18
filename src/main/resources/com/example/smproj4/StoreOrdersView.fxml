@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.example.smproj4.StoreOrdersTabController" spacing="10" alignment="TOP_CENTER">
+    <!-- Order Number Selection -->
+    <HBox spacing="10.0" alignment="CENTER_LEFT">
+        <Label text="Select Order Number:" />
+        <ComboBox fx:id="orderNumberComboBox" prefWidth="150.0" />
+    </HBox>
+    <!-- Order Total -->
+    <HBox spacing="10.0" alignment="CENTER_LEFT">
+        <Label text="Order Total (with tax):" />
+        <TextField fx:id="orderTotalField" editable="false" prefWidth="150.0" />
+    </HBox>
+    <!-- List of Pizzas -->
+    <Label text="Pizzas in Order:" />
+    <ListView fx:id="pizzasListView" prefHeight="200.0" />
+    <!-- Buttons -->
+    <HBox spacing="20.0" alignment="CENTER">
+        <Button text="Cancel Order" onAction="#handleCancelOrder" />
+        <Button text="Export Orders" onAction="#handleExportOrders" />
+    </HBox>
+</VBox>
