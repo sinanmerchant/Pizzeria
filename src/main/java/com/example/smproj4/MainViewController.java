@@ -12,6 +12,17 @@ import javafx.scene.image.Image;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Main controller for the RU Pizzeria application.
+ * Manages navigation between different views and windows, including Chicago-style,
+ * New York-style, current orders, and store orders.
+ * 
+ * Handles creating new orders, maintaining the order history, and updating UI windows dynamically.
+ * 
+ * This controller follows a centralized window management strategy using a map to track open windows.
+ * 
+ * @author Sinan Merchant + Varun Bondugula
+ */
 public class MainViewController {
 
     @FXML
@@ -31,7 +42,9 @@ public class MainViewController {
 
     private OrderHistory orderHistory = new OrderHistory();
 
-    // Nested class to hold both the Stage and the Controller
+    /**
+     * Nested class to hold both the stage and the controller for an open window.
+     */
     private static class WindowInfo {
         Stage stage;
         Object controller;
@@ -45,6 +58,10 @@ public class MainViewController {
     // Map to keep track of open windows and their controllers
     private Map<String, WindowInfo> openWindows = new HashMap<>();
 
+    /**
+     * Initializes the controller.
+     * Loads images into the respective {@code ImageView} elements and creates the initial order.
+     */
     @FXML
     public void initialize() {
         // Load images for the image views
@@ -57,31 +74,55 @@ public class MainViewController {
         currentOrder = createNewOrder();
     }
 
+    /**
+     * Creates a new {@code Order} with a unique order number.
+     * 
+     * @return The newly created order.
+     */
     private Order createNewOrder() {
         // Create a new order with a unique order number
         return new Order(orderCounter++);
     }
 
+    /**
+     * Opens the Chicago-style pizza ordering window.
+     */
     @FXML
     public void handleChicagoStyle() {
         openPizzaWindow("Chicago Style", "/com/example/smproj4/OrderPizzaView.fxml", "Chicago Style");
     }
 
+    /**
+     * Opens the New York-style pizza ordering window.
+     */
     @FXML
     public void handleNYStyle() {
         openPizzaWindow("NY Style", "/com/example/smproj4/OrderPizzaView.fxml", "NY Style");
     }
 
+    /**
+     * Opens the store orders window to view all orders placed.
+     */
     @FXML
     public void handleOrdersPlaced() {
         openWindow("Store Orders", "/com/example/smproj4/StoreOrdersView.fxml");
     }
 
+    /**
+     * Opens the current order window to manage the ongoing order.
+     */
     @FXML
     public void handleCurrentOrder() {
         openWindow("Current Order", "/com/example/smproj4/CurrentOrderView.fxml");
     }
 
+    /**
+     * Opens a pizza ordering window for the specified style.
+     * 
+     * @param windowKey Key used to track the window.
+     * @param fxmlPath Path to the FXML file for the window.
+     * @param style The pizza style (e.g., "Chicago Style").
+     */
     private void openPizzaWindow(String windowKey, String fxmlPath, String style) {
         if (openWindows.containsKey(windowKey)) {
             openWindows.get(windowKey).stage.toFront();
@@ -120,6 +161,12 @@ public class MainViewController {
         }
     }
 
+     /**
+     * Opens a general-purpose window.
+     * 
+     * @param windowKey Key used to track the window.
+     * @param fxmlPath Path to the FXML file for the window.
+     */
     private void openWindow(String windowKey, String fxmlPath) {
         if (openWindows.containsKey(windowKey)) {
             openWindows.get(windowKey).stage.toFront();
@@ -184,10 +231,18 @@ public class MainViewController {
         }
     }
 
+    /**
+     * Retrieves the {@code OrderHistory} object.
+     * 
+     * @return The order history.
+     */
     public OrderHistory getOrderHistory() {
         return orderHistory;
     }
 
+    /**
+     * Updates the store orders window, if it is open.
+     */
     public void updateStoreOrdersWindow() {
         if (openWindows.containsKey("Store Orders")) {
             WindowInfo windowInfo = openWindows.get("Store Orders");

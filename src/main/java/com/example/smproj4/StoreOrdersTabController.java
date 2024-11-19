@@ -9,6 +9,17 @@ import java.io.File;
 import java.io.FileWriter;
 import java.util.List;
 
+/**
+ * Controller for managing and viewing store orders.
+ * Allows the user to:
+ * - View order details for a selected order.
+ * - Cancel an order.
+ * - Export all orders to a text file.
+ * 
+ * The class interacts with {@code OrderHistory} to fetch, modify, and export orders.
+ * 
+ * @author Sinan Merchant + Varun Bondugula
+ */
 public class StoreOrdersTabController {
 
     @FXML
@@ -24,6 +35,10 @@ public class StoreOrdersTabController {
 
     private static final double TAX_RATE = 0.06625;
 
+    /**
+     * Initializes the controller.
+     * Sets up listeners for order selection and initializes the UI components.
+     */
     @FXML
     private void initialize() {
         orderNumberComboBox.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
@@ -31,11 +46,21 @@ public class StoreOrdersTabController {
         });
     }
 
+    /**
+     * Sets the {@code OrderHistory} instance to be used by this controller.
+     * Updates the order numbers in the combo box.
+     * 
+     * @param history The {@code OrderHistory} instance.
+     */
     public void setOrderHistory(OrderHistory history) {
         this.orderHistory = history;
         updateOrderNumbers();
     }
 
+    /**
+     * Updates the list of order numbers in the combo box.
+     * If orders are present, the first order is selected by default.
+     */
     public void updateOrderNumbers() {
         List<Integer> orderNumbers = orderHistory.getAllOrders().stream()
                 .map(Order::getNumber)
@@ -55,6 +80,12 @@ public class StoreOrdersTabController {
         }
     }
 
+    /**
+     * Displays the details of the selected order.
+     * Shows the pizzas in the order and calculates the total with tax.
+     * 
+     * @param orderNumber The selected order number.
+     */
     private void displayOrderDetails(Integer orderNumber) {
         if (orderNumber == null) {
             clearOrderDetails();
@@ -79,11 +110,18 @@ public class StoreOrdersTabController {
         }
     }
 
+    /**
+     * Clears the order details from the UI.
+     */
     private void clearOrderDetails() {
         pizzasListView.getItems().clear();
         orderTotalField.clear();
     }
 
+    /**
+     * Handles the cancellation of the selected order.
+     * Removes the order from the order history and updates the UI.
+     */
     @FXML
     private void handleCancelOrder() {
         Integer selectedOrderNumber = orderNumberComboBox.getSelectionModel().getSelectedItem();
@@ -103,6 +141,10 @@ public class StoreOrdersTabController {
         }
     }
 
+    /**
+     * Handles the export of all orders to a text file.
+     * Includes order details such as pizzas and total amounts.
+     */
     @FXML
     private void handleExportOrders() {
         if (orderHistory.getAllOrders().isEmpty()) {
@@ -135,6 +177,14 @@ public class StoreOrdersTabController {
         }
     }
 
+    /**
+     * Displays an alert dialog with the specified title, header, and content.
+     * 
+     * @param title   The title of the alert.
+     * @param header  The header text of the alert.
+     * @param content The content message of the alert.
+     * @param type    The type of alert (e.g., INFORMATION, ERROR).
+     */
     private void showAlert(String title, String header, String content, Alert.AlertType type) {
         Alert alert = new Alert(type);
         alert.setTitle(title);

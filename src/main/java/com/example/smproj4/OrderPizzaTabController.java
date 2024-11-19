@@ -8,6 +8,18 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 
+/**
+ * Controller for the pizza ordering tab.
+ * Manages the selection, customization, and addition of pizzas to the current order.
+ * Supports multiple pizza types and styles (Chicago and NY).
+ * 
+ * Interacts with {@code PizzaFactory} to create pizza instances and allows
+ * users to customize Build Your Own pizzas.
+ * 
+ * This controller also updates pizza details dynamically based on user selections.
+ * 
+ * @author Sinan Merchant + Varun Bondugula
+ */
 public class OrderPizzaTabController {
 
     @FXML
@@ -54,14 +66,28 @@ public class OrderPizzaTabController {
         }
     }
 
+    /**
+     * Sets the shared order for the controller.
+     * 
+     * @param order The current order.
+     */
     public void setOrder(Order order) {
         this.currentOrder = order;
     }
 
+    /**
+     * Sets the callback for updating the current order details in other views.
+     * 
+     * @param callback The update callback.
+     */
     public void setUpdateCallback(Runnable callback) {
         this.updateCallback = callback;
     }
 
+    /**
+     * Initializes the controller.
+     * Sets up the size toggle group, pizza type combo box, and topping lists.
+     */
     @FXML
     private void initialize() {
         sizeGroup = new ToggleGroup();
@@ -79,6 +105,12 @@ public class OrderPizzaTabController {
         crustField.setText("");
     }
 
+    /**
+     * Handles the selection of a pizza type.
+     * Dynamically updates the pizza details and available customizations.
+     * 
+     * @param pizzaType The selected pizza type.
+     */
     private void handlePizzaTypeChange(String pizzaType) {
         if (pizzaType == null) {
             currentPizza = null;
@@ -130,6 +162,9 @@ public class OrderPizzaTabController {
         }
     }
 
+    /**
+     * Enables topping selection and size selection for Build Your Own pizzas.
+     */
     private void unlockSizeAndToppings() {
         availableToppingsList.setDisable(false);
         selectedToppingsList.setDisable(false);
@@ -138,6 +173,9 @@ public class OrderPizzaTabController {
         largeSizeButton.setDisable(false);
     }
 
+    /**
+     * Sets the default pizza size to Small and updates the current pizza.
+     */
     private void setDefaultSize() {
         smallSizeButton.setSelected(true);
         if (currentPizza != null) {
@@ -145,6 +183,9 @@ public class OrderPizzaTabController {
         }
     }
 
+    /**
+     * Handles changes in the pizza size selection.
+     */
     private void handleSizeChange() {
         if (currentPizza != null) {
             if (smallSizeButton.isSelected()) currentPizza.setSize(Size.SMALL);
@@ -154,6 +195,9 @@ public class OrderPizzaTabController {
         }
     }
 
+    /**
+     * Updates the UI fields to reflect the current pizza's details.
+     */
     private void updatePizzaDetails() {
         if (currentPizza != null) {
             List<Topping> toppings = currentPizza.getToppings();
@@ -166,6 +210,9 @@ public class OrderPizzaTabController {
         }
     }
 
+    /**
+     * Handles adding a topping to a Build Your Own pizza.
+     */
     @FXML
     private void handleAddTopping() {
         if (!(currentPizza instanceof BuildYourOwn)) return;
@@ -179,6 +226,9 @@ public class OrderPizzaTabController {
         }
     }
 
+    /**
+     * Handles removing a topping from a Build Your Own pizza.
+     */
     @FXML
     private void handleRemoveTopping() {
         if (!(currentPizza instanceof BuildYourOwn)) return;
@@ -192,6 +242,9 @@ public class OrderPizzaTabController {
         }
     }
 
+    /**
+     * Handles adding the current pizza to the order.
+     */
     @FXML
     private void handleAddToOrder() {
         if (currentPizza == null) {
@@ -208,6 +261,9 @@ public class OrderPizzaTabController {
         resetPizzaSelection();
     }
 
+    /**
+     * Resets the UI fields and selection for a new pizza.
+     */
     private void resetPizzaSelection() {
         pizzaTypeComboBox.getSelectionModel().clearSelection();
         selectedToppingsList.getItems().clear();
@@ -218,6 +274,14 @@ public class OrderPizzaTabController {
         currentPizza = null;
     }
 
+    /**
+     * Displays an alert dialog with the specified parameters.
+     * 
+     * @param title   The title of the alert.
+     * @param header  The header text of the alert.
+     * @param content The content message of the alert.
+     * @param type    The type of alert.
+     */
     private void showAlert(String title, String header, String content, Alert.AlertType type) {
         Alert alert = new Alert(type);
         alert.setTitle(title);

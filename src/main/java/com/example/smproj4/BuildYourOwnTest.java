@@ -6,11 +6,19 @@ import java.util.ArrayList;
 
 import static org.junit.Assert.assertEquals;
 
+/**
+ * JUnit test class for the {@code BuildYourOwn} class.
+ * Contains test cases to validate the price calculation logic for various scenarios.
+ * Ensures that the price method calculates the correct total based on size and toppings.
+ * 
+ * @author Sinan Merchant + Varun Bondugula
+ */
 public class BuildYourOwnTest {
     private static final double DECIMAL_LENGTH = 0.01;
 
     /**
      * Test case 1: Small pizza with no toppings.
+     * Validates the base price for a small pizza with no additional toppings.
      */
     @Test
     public void testPrice_Small_NoToppings() {
@@ -24,6 +32,7 @@ public class BuildYourOwnTest {
 
     /**
      * Test case 2: Medium pizza with 3 toppings.
+     * Validates the price for a medium pizza with three additional toppings.
      */
     @Test
     public void testPrice_Medium_ThreeToppings() {
@@ -43,6 +52,7 @@ public class BuildYourOwnTest {
 
     /**
      * Test case 3: Large pizza with maximum toppings (7 toppings).
+     * Validates the price for a large pizza with the maximum allowed number of toppings.
      */
     @Test
     public void testPrice_Large_MaxToppings() {
@@ -66,6 +76,7 @@ public class BuildYourOwnTest {
 
     /**
      * Test case 4: Small pizza with maximum toppings (7 toppings).
+     * Validates the price for a small pizza with the maximum allowed number of toppings.
      */
     @Test
     public void testPrice_Small_MaxToppings() {
@@ -89,6 +100,7 @@ public class BuildYourOwnTest {
 
     /**
      * Test case 5: Large pizza with no toppings.
+     * Validates the base price for a large pizza with no additional toppings.
      */
     @Test
     public void testPrice_Large_NoToppings() {

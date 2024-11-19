@@ -3,6 +3,16 @@ package com.example.smproj4;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 
+/**
+ * Controller for managing the "Current Order" tab in the application.
+ * Handles operations related to the current order, such as viewing order details,
+ * removing pizzas, clearing the order, and placing the order.
+ * 
+ * This controller interacts with the {@code MainViewController} to update shared
+ * application states like the order history and store orders.
+ * 
+ * @author Sinan Merchant + Varun Bondugula
+ */
 public class CurrentOrderTabController {
 
     @FXML
@@ -20,15 +30,28 @@ public class CurrentOrderTabController {
 
     private MainViewController mainController;
 
+    /**
+     * Initializes the controller.
+     * Clears the current order details upon initialization.
+     */
     @FXML
     private void initialize() {
         clearOrderDetails();
     }
 
+    /**
+     * Sets the reference to the {@code MainViewController}.
+     * This allows interaction with shared data and state.
+     * 
+     * @param controller The main controller of the application.
+     */
     public void setMainController(MainViewController controller) {
         this.mainController = controller;
     }
 
+    /**
+     * Updates the details of the current order in the UI.
+     */
     public void updateOrderDetails() {
         if (currentOrder == null) return;
 
@@ -45,11 +68,20 @@ public class CurrentOrderTabController {
         updateTotals();
     }
 
+    /**
+     * Sets the current order and updates the UI.
+     * 
+     * @param order The current order.
+     */
     public void setOrder(Order order) {
         this.currentOrder = order;
         updateOrderDetails();
     }
 
+    /**
+     * Handles removing the selected pizza from the current order.
+     * If no pizza is selected, an error alert is displayed.
+     */
     @FXML
     private void handleRemovePizza() {
         int selectedIndex = orderDetailsList.getSelectionModel().getSelectedIndex();
@@ -61,12 +93,21 @@ public class CurrentOrderTabController {
         }
     }
 
+    /**
+     * Handles clearing all pizzas from the current order.
+     * Updates the UI to reflect the cleared state.
+     */
     @FXML
     private void handleClearOrder() {
         currentOrder.getPizzas().clear();
         updateOrderDetails();
     }
 
+    /**
+     * Handles placing the current order.
+     * Validates that the order is not empty before placing it.
+     * Adds the order to the order history and creates a new order.
+     */
     @FXML
     private void handlePlaceOrder() {
         if (currentOrder.getPizzas().isEmpty()) {
@@ -86,6 +127,9 @@ public class CurrentOrderTabController {
         mainController.createNewOrderAndUpdate();
     }
 
+    /**
+     * Clears all fields in the current order view.
+     */
     private void clearOrderDetails() {
         orderNumberField.clear();
         orderDetailsList.getItems().clear();
@@ -94,6 +138,9 @@ public class CurrentOrderTabController {
         totalField.clear();
     }
 
+    /**
+     * Updates the subtotal, tax, and total fields based on the current order.
+     */
     private void updateTotals() {
         if (currentOrder == null) return;
 
@@ -106,6 +153,14 @@ public class CurrentOrderTabController {
         totalField.setText(String.format("%.2f", total));
     }
 
+    /**
+     * Displays an alert dialog with the given title, header, and content.
+     * 
+     * @param title   The title of the alert.
+     * @param header  The header text of the alert.
+     * @param content The content message of the alert.
+     * @param type    The type of alert (e.g., ERROR, INFORMATION).
+     */
     private void showAlert(String title, String header, String content, Alert.AlertType type) {
         Alert alert = new Alert(type);
         alert.setTitle(title);
