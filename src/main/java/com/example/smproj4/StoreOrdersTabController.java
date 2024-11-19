@@ -68,11 +68,9 @@ public class StoreOrdersTabController {
         orderNumberComboBox.setItems(FXCollections.observableArrayList(orderNumbers));
 
         if (!orderNumbers.isEmpty()) {
-            // Clear selection to ensure listener is triggered
             orderNumberComboBox.getSelectionModel().clearSelection();
             orderNumberComboBox.getSelectionModel().selectFirst();
 
-            // Explicitly display order details for the new selection
             Integer selectedOrderNumber = orderNumberComboBox.getSelectionModel().getSelectedItem();
             displayOrderDetails(selectedOrderNumber);
         } else {
@@ -94,13 +92,11 @@ public class StoreOrdersTabController {
 
         Order selectedOrder = orderHistory.getOrderByNumber(orderNumber);
         if (selectedOrder != null) {
-            // Display pizzas
             pizzasListView.getItems().clear();
             for (Pizza pizza : selectedOrder.getPizzas()) {
                 pizzasListView.getItems().add(pizza.toString());
             }
 
-            // Calculate total with tax
             double subtotal = selectedOrder.calculateTotal();
             double tax = subtotal * TAX_RATE;
             double total = subtotal + tax;
@@ -135,7 +131,6 @@ public class StoreOrdersTabController {
             orderHistory.cancelOrder(selectedOrder);
             showAlert("Success", "Order Cancelled", "Order #" + selectedOrderNumber + " has been cancelled.", Alert.AlertType.INFORMATION);
             updateOrderNumbers();
-            // No need to call displayOrderDetails here as it's handled in updateOrderNumbers()
         } else {
             showAlert("Error", "Order Not Found", "The selected order could not be found.", Alert.AlertType.ERROR);
         }

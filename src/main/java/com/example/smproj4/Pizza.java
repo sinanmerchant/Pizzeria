@@ -29,9 +29,8 @@ public abstract class Pizza {
      * 
      * @return The price of the pizza.
      */
-    public abstract double price();     // Calculate the pizza price
+    public abstract double price();
 
-    // Getters and setters
 
     /**
      * Retrieves the list of toppings on the pizza.

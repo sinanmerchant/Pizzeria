@@ -43,7 +43,7 @@ public class OrderPizzaTabController {
     private ToggleGroup sizeGroup;
     private String pizzaStyle;
     private Pizza currentPizza;
-    private PizzaFactory pizzaFactory; // Use PizzaFactory to create pizzas
+    private PizzaFactory pizzaFactory;
     private Order currentOrder;
     private Runnable updateCallback;
 
@@ -56,7 +56,6 @@ public class OrderPizzaTabController {
         this.pizzaStyle = style;
         pizzaStyleLabel.setText(style + " Pizza");
 
-        // Initialize the appropriate PizzaFactory based on the style
         if ("Chicago Style".equals(style)) {
             pizzaFactory = new ChicagoPizza();
         } else if ("NY Style".equals(style)) {
@@ -120,7 +119,6 @@ public class OrderPizzaTabController {
             return;
         }
 
-        // Ensure pizzaStyle and pizzaFactory are not null
         if (pizzaStyle == null || pizzaFactory == null) {
             showAlert("Error", "Pizza Style Not Set", "The pizza style has not been initialized.", Alert.AlertType.ERROR);
             return;
@@ -252,7 +250,7 @@ public class OrderPizzaTabController {
             return;
         }
 
-        currentOrder.addPizza(currentPizza); // Add pizza to the shared order
+        currentOrder.addPizza(currentPizza);
         if (updateCallback != null) {
             updateCallback.run();
         }

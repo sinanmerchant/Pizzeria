@@ -115,15 +115,12 @@ public class CurrentOrderTabController {
             return;
         }
 
-        // Add the current order to OrderHistory
         mainController.getOrderHistory().addOrder(currentOrder);
 
         showAlert("Success", "Order Placed", "Your order has been placed successfully.", Alert.AlertType.INFORMATION);
 
-        // Notify MainViewController to update the Store Orders Window
         mainController.updateStoreOrdersWindow();
 
-        // Create a new order
         mainController.createNewOrderAndUpdate();
     }
 

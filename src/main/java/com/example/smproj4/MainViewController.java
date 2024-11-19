@@ -55,7 +55,6 @@ public class MainViewController {
         }
     }
 
-    // Map to keep track of open windows and their controllers
     private Map<String, WindowInfo> openWindows = new HashMap<>();
 
     /**
@@ -64,13 +63,11 @@ public class MainViewController {
      */
     @FXML
     public void initialize() {
-        // Load images for the image views
         chicagoImageView.setImage(new Image(getClass().getResource("/images/chicago_pizza.jpg").toExternalForm()));
         nyImageView.setImage(new Image(getClass().getResource("/images/ny_pizza.jpg").toExternalForm()));
         ordersImageView.setImage(new Image(getClass().getResource("/images/orders_icon.jpg").toExternalForm()));
         cartImageView.setImage(new Image(getClass().getResource("/images/cart_icon.jpg").toExternalForm()));
 
-        // Create a new order
         currentOrder = createNewOrder();
     }
 
@@ -80,7 +77,6 @@ public class MainViewController {
      * @return The newly created order.
      */
     private Order createNewOrder() {
-        // Create a new order with a unique order number
         return new Order(orderCounter++);
     }
 
@@ -133,12 +129,10 @@ public class MainViewController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
             VBox root = loader.load();
 
-            // Get the controller
             OrderPizzaTabController pizzaController = loader.getController();
             pizzaController.setPizzaStyle(style);
             pizzaController.setOrder(currentOrder);
             pizzaController.setUpdateCallback(() -> {
-                // Update current order window if open
                 if (openWindows.containsKey("Current Order")) {
                     WindowInfo windowInfo = openWindows.get("Current Order");
                     if (windowInfo.controller instanceof CurrentOrderTabController) {
@@ -154,7 +148,6 @@ public class MainViewController {
             stage.setOnCloseRequest(e -> openWindows.remove(windowKey));
             stage.show();
 
-            // Store both the stage and the controller
             openWindows.put(windowKey, new WindowInfo(stage, pizzaController));
         } catch (Exception e) {
             e.printStackTrace();
@@ -177,7 +170,6 @@ public class MainViewController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
             VBox root = loader.load();
 
-            // Get the controller
             Object controller = loader.getController();
 
             Stage stage = new Stage();
@@ -196,7 +188,6 @@ public class MainViewController {
 
             stage.show();
 
-            // Store both the stage and the controller
             openWindows.put(windowKey, new WindowInfo(stage, controller));
         } catch (Exception e) {
             e.printStackTrace();
@@ -209,7 +200,6 @@ public class MainViewController {
     public void createNewOrderAndUpdate() {
         currentOrder = createNewOrder();
 
-        // Update Current Order window
         if (openWindows.containsKey("Current Order")) {
             WindowInfo windowInfo = openWindows.get("Current Order");
             if (windowInfo.controller instanceof CurrentOrderTabController) {
@@ -219,7 +209,6 @@ public class MainViewController {
             }
         }
 
-        // Update all pizza controllers with the new currentOrder
         for (String key : openWindows.keySet()) {
             if (key.equals("Chicago Style") || key.equals("NY Style")) {
                 WindowInfo windowInfo = openWindows.get(key);
